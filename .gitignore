@@ -13,6 +13,7 @@
 
 # misc
 /config/config.env
+/_data
 
 .env
 .DS_Store
