@@ -2,6 +2,7 @@
   "name": "node-api-training",
   "version": "1.0.0",
   "description": "A guided training to learn API design with node.",
+  "private": true,
   "main": "server.js",
   "scripts": {
     "start": "NODE_ENV=production node server",
