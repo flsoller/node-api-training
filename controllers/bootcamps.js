@@ -7,14 +7,37 @@ const asyncHandler = require('../middleware/async');
 // @route   GET /api/v1/bootcamps
 // @access  Public
 exports.getBootcamps = asyncHandler(async (req, res, next) => {
-  let queryStr = JSON.stringify(req.query);
+  let query;
 
+  // Copy query from request
+  let requestQuery = { ...req.query };
+
+  // Define properties to be removed from request query
+  const removeProps = ['select'];
+
+  // Loop over removeProps and delete from query
+  removeProps.forEach((param) => delete requestQuery[param]);
+
+  // Create query string
+  let queryStr = JSON.stringify(requestQuery);
+
+  // Create mongodb operators ($gt, $gte, etc.)
   queryStr = queryStr.replace(
     /\b(gt|gte|lt|lte|in)\b/g,
     (match) => `$${match}`
   );
 
-  const bootcamps = await Bootcamp.find(JSON.parse(queryStr));
+  // Finding resource
+  query = Bootcamp.find(JSON.parse(queryStr));
+
+  // Select fields
+  if (req.query.select) {
+    const fields = req.query.select.split(',').join(' ');
+    query = query.select(fields);
+  }
+
+  // Executing query
+  const bootcamps = await query;
 
   res
     .status(200)
